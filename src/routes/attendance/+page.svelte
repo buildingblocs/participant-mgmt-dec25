@@ -205,7 +205,7 @@
                     </h2>
                     <p>Scanning has been paused</p>
                     <button
-                        onclick={() => (QRdata = "")}
+                        onclick={() => ((QRdata = ""), (scanned = false))}
                         class="bg-red-950 text-red-50 p-2 flex justify-center items-center gap-3 mt-2 rounded-md font-medium"
                     >
                         Start Scanning
