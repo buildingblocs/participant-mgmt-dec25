@@ -138,7 +138,6 @@
                         use:enhance={() => {
                             marking = true;
                             return async ({ update }) => {
-                                await fetch("/ping");
                                 await update({ reset: false });
                                 marking = false;
                                 if (!form?.errorMsg) {
