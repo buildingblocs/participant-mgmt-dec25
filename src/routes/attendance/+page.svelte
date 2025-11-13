@@ -15,8 +15,8 @@
     let camToUse = $state("");
     let camName = $state("Default");
     let scanner: QrScanner | null = null;
-    let scanned = $state(false)
-    let marking = $state(false)
+    let scanned = $state(false);
+    let marking = $state(false);
 
     $effect(() => {
         if (videoElem) {
@@ -35,7 +35,7 @@
                                 return entry && entry[0] === QRdata;
                             });
                         }
-                        scanned = true
+                        scanned = true;
                     }
                 },
                 {
@@ -118,28 +118,42 @@
     {#if scanned}
         {#if QRres && QRres.length > 0}
             <div class="absolute bottom-5 w-full px-5">
-                <div class=" bg-blue-100 p-3 rounded-md {form?.errorMsg ? 'bg-red-100' : 'bg-blue-100'}">
-                    <h2 class="text-xl font-semibold {form?.errorMsg ? 'text-red-900' : 'text-blue-900'}">
-                        {form?.errorMsg ? 'Error, please screenshot' : 'Confirm Details'}
+                <div
+                    class=" bg-blue-100 p-3 rounded-md {form?.errorMsg
+                        ? 'bg-red-100'
+                        : 'bg-blue-100'}"
+                >
+                    <h2
+                        class="text-xl font-semibold {form?.errorMsg
+                            ? 'text-red-900'
+                            : 'text-blue-900'}"
+                    >
+                        {form?.errorMsg
+                            ? "Error, please screenshot"
+                            : "Confirm Details"}
                     </h2>
-                    <form method="POST" action="?/markPresent"
-                    use:enhance={() => {
-                        marking = true
-                  		return async ({ update }) => {
-                 			await update({ reset: false});
-                            marking = false
-                            if (!form?.errorMsg) {
-                              scanned = false;
-                            }
-                  		};
-                   	}}>
+                    <form
+                        method="POST"
+                        action="?/markPresent"
+                        use:enhance={() => {
+                            marking = true;
+                            return async ({ update }) => {
+                                await fetch("/ping");
+                                await update({ reset: false });
+                                marking = false;
+                                if (!form?.errorMsg) {
+                                    scanned = false;
+                                }
+                            };
+                        }}
+                    >
                         <p>
                             Name: {QRres[1]}
                             <br />
                             Group: {QRres[2]}
                             <br />
                             {#if form?.errorMsg}
-                            Error: {form?.errorMsg}
+                                Error: {form?.errorMsg}
                             {/if}
                         </p>
                         <input
@@ -162,13 +176,17 @@
                                 <Spinner />
                             </button>
                         {:else if form?.errorMsg}
-                        <button
-                            onclick={() => (QRdata = "", scanned = false, form.errorMsg = "")}
-                            class="bg-red-950 text-red-50 p-2 flex justify-center items-center gap-3 mt-2 rounded-md font-medium"
-                        >
-                            I have screenshotted
-                            <ArrowRight size="20" />
-                        </button>
+                            <button
+                                onclick={() => (
+                                    (QRdata = ""),
+                                    (scanned = false),
+                                    (form.errorMsg = "")
+                                )}
+                                class="bg-red-950 text-red-50 p-2 flex justify-center items-center gap-3 mt-2 rounded-md font-medium"
+                            >
+                                I have screenshotted
+                                <ArrowRight size="20" />
+                            </button>
                         {:else}
                             <button
                                 class="bg-blue-950 text-blue-50 p-2 flex justify-center items-center gap-3 mt-2 rounded-md font-medium"
