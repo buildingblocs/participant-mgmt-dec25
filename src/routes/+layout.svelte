@@ -12,7 +12,7 @@
     <link rel="icon" href={favicon} />
 </svelte:head>
 
-<div class="flex flex-col h-screen">
+<div class="flex flex-col full-viewport-height">
     <div class="bg-blue-950 w-full shrink-0">
         <Header data={page.data} />
     </div>

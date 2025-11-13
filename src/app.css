@@ -156,3 +156,13 @@ button {
 .selector {
     @apply focus-visible:ring-0 shadow-none rounded-none p-5 border-r-0 border-l-0 border-t-0 border-b-0 justify-between items-center w-full;
 }
+
+.full-viewport-height {
+    height: 100vh;
+}
+
+@supports (height: 100dvh) {
+    .full-viewport-height {
+        height: 100dvh;
+    }
+}
