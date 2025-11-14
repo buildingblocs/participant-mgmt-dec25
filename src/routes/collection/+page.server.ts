@@ -1,20 +1,8 @@
-import serviceAcc from "$lib/service-acc";
 import { fail } from "@sveltejs/kit";
-import { google } from "googleapis";
 import type { Actions, PageServerLoad } from "./$types";
+import { batchGet, update } from "$lib/sheets";
 
-const creds = serviceAcc();
-const SCOPES = ["https://www.googleapis.com/auth/spreadsheets"];
-const auth = new google.auth.GoogleAuth({
-  scopes: SCOPES,
-  credentials: creds,
-});
-const sheets = google.sheets({ version: "v4", auth });
-const sheetId = "1wG-PYckva-b5buAsl-R2atFYD0byaW4N0YdKd9XGBlE";
-const result = await sheets.spreadsheets.values.batchGet({
-  spreadsheetId: sheetId,
-  ranges: ["Sheet1!A:B", "Sheet1!G:H"],
-});
+const result = await batchGet(["Sheet1!A:B", "Sheet1!G:H"]);
 
 export const actions = {
   markPresent: async (event) => {
@@ -48,18 +36,10 @@ export const actions = {
 
           // update collection status
           try {
-            await sheets.spreadsheets.values.update({
-              spreadsheetId: sheetId,
-              range:
-                freebieColumns[
-                  freebieCollected as keyof typeof freebieColumns
-                ] +
+            await update(
+              freebieColumns[freebieCollected as keyof typeof freebieColumns] +
                 (index! + 1),
-              valueInputOption: "USER_ENTERED",
-              requestBody: {
-                values: [["TRUE"]],
-              },
-            });
+            );
             // return fail(400, { errorMsg: "ID not in sheet" });
             return { success: true };
           } catch (e) {

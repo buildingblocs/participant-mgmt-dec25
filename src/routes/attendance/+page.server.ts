@@ -1,21 +1,9 @@
 import type { Actions } from "./$types";
-import { google } from "googleapis";
-import serviceAcc from "$lib/service-acc";
 import type { PageServerLoad } from "./$types";
 import { fail } from "@sveltejs/kit";
+import { get, update } from "$lib/sheets";
 
-const creds = serviceAcc();
-const SCOPES = ["https://www.googleapis.com/auth/spreadsheets"];
-const auth = new google.auth.GoogleAuth({
-  scopes: SCOPES,
-  credentials: creds,
-});
-const sheets = google.sheets({ version: "v4", auth });
-const sheetId = "1wG-PYckva-b5buAsl-R2atFYD0byaW4N0YdKd9XGBlE";
-const result = await sheets.spreadsheets.values.get({
-  spreadsheetId: sheetId,
-  range: "Sheet1!A:C",
-});
+const result = await get("Sheet1!A:C");
 
 export const actions = {
   markPresent: async (event) => {
@@ -42,14 +30,7 @@ export const actions = {
     }
     // update Attendance
     try {
-      await sheets.spreadsheets.values.update({
-        spreadsheetId: sheetId,
-        range: dayRow[day] + (index! + 1),
-        valueInputOption: "USER_ENTERED",
-        requestBody: {
-          values: [["TRUE"]],
-        },
-      });
+      await update(dayRow[day] + (index! + 1));
       // return fail(400, { errorMsg: "ID not in sheet" });
       return { success: true };
     } catch (e) {
