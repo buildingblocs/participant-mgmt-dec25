@@ -8,7 +8,7 @@
 
     let { data, form }: PageProps = $props();
     let videoElem: HTMLVideoElement;
-    let item = $state(data.ids[1].values[0][0]);
+    let day = $state("1");
     let QRdata = $state("");
     let QRres = $state([]);
     let cameras = $state<QrScanner.Camera[]>([]);
@@ -17,7 +17,6 @@
     let scanner: QrScanner | null = null;
     let scanned = $state(false);
     let marking = $state(false);
-    let collected = $state(false);
 
     $effect(() => {
         if (videoElem) {
@@ -28,21 +27,15 @@
                         let entry = "";
                         QRres = [];
                         QRdata = result.data;
-                        entry = data.ids[0].values
+                        entry = data.ids
                             .slice(1)
                             .find((entry) => entry[0] === QRdata);
                         if (entry) {
-                            QRres = data.ids[0].values.find((entry) => {
+                            QRres = data.ids.find((entry) => {
                                 return entry && entry[0] === QRdata;
                             });
                         }
-                        const index = data.ids[0].values.findIndex(
-                            (entry) => entry[0] === QRdata,
-                        );
-                        console.log(index);
-                        console.log(data.ids[1].values[index]);
                         scanned = true;
-                        console.log(data);
                     }
                 },
                 {
@@ -93,12 +86,12 @@
 
 <div class="h-full flex flex-col">
     <div class="grid grid-cols-2 bg-blue-50 text-black shrink-0">
-        <Select.Root type="single" bind:value={item}>
-            <Select.Trigger class="selector">{item}</Select.Trigger>
+        <Select.Root type="single" bind:value={day}>
+            <Select.Trigger class="selector">Day {day}</Select.Trigger>
             <Select.Content>
-                {#each data.ids[1].values[0] as freebie}
-                    <Select.Item value={freebie}>{freebie}</Select.Item>
-                {/each}
+                <Select.Item value="1">Day 1</Select.Item>
+                <Select.Item value="2">Day 2</Select.Item>
+                <Select.Item value="3">Day 3</Select.Item>
             </Select.Content>
         </Select.Root>
         <Select.Root type="single" bind:value={camToUse}>
@@ -156,6 +149,8 @@
                         <p>
                             Name: {QRres[1]}
                             <br />
+                            Group: {QRres[2]}
+                            <br />
                             {#if form?.errorMsg}
                                 Error: {form?.errorMsg}
                             {/if}
@@ -167,10 +162,10 @@
                             bind:value={QRdata}
                         />
                         <input
-                            name="item"
-                            type="text"
+                            name="day"
+                            type="number"
                             class="hidden"
-                            bind:value={item}
+                            bind:value={day}
                         />
                         {#if marking}
                             <button
@@ -195,7 +190,7 @@
                             <button
                                 class="bg-blue-950 text-blue-50 p-2 flex justify-center items-center gap-3 mt-2 rounded-md font-medium"
                             >
-                                Mark Collected for {item}
+                                Mark Present for Day {day}
                                 <ArrowRight size="20" />
                             </button>
                         {/if}
