@@ -39,10 +39,10 @@
                         const index = data.ids[0].values.findIndex(
                             (entry) => entry[0] === QRdata,
                         );
-                        console.log(index);
-                        console.log(data.ids[1].values[index]);
+                        if (data.ids[1].values[index][0] == "TRUE") {
+                            collected = true;
+                        }
                         scanned = true;
-                        console.log(data);
                     }
                 },
                 {
@@ -123,7 +123,27 @@
     </div>
 
     {#if scanned}
-        {#if QRres && QRres.length > 0}
+        {#if collected}
+            <div class="absolute bottom-5 w-full px-5">
+                <div class="bg-red-100 p-3 rounded-md">
+                    <h2 class="text-xl font-semibold text-red-900">
+                        Participant has collected item
+                    </h2>
+                    <p>Please do not pass the item</p>
+                    <button
+                        onclick={() => (
+                            (QRdata = ""),
+                            (scanned = false),
+                            (collected = false)
+                        )}
+                        class="bg-red-950 text-red-50 p-2 flex justify-center items-center gap-3 mt-2 rounded-md font-medium"
+                    >
+                        Start Scanning
+                        <ArrowRight size="20" />
+                    </button>
+                </div>
+            </div>
+        {:else if QRres && QRres.length > 0}
             <div class="absolute bottom-5 w-full px-5">
                 <div
                     class=" bg-blue-100 p-3 rounded-md {form?.errorMsg
