@@ -1,7 +1,10 @@
 <script lang="ts">
     import ArrowRight from "$lib/components/icons/arrow-right.svelte";
+    import ArrowLeft from "$lib/components/icons/arrow-left.svelte";
+    import Plus from "$lib/components/icons/plus.svelte";
     import { Spinner } from "$lib/components/ui/spinner/index.js";
     import * as Select from "$lib/components/ui/select/index.js";
+    import { Textarea } from "$lib/components/ui/textarea/index.js";
     import QrScanner from "qr-scanner";
     import { enhance } from "$app/forms";
     import type { PageProps } from "./$types";
@@ -17,6 +20,8 @@
     let scanner: QrScanner | null = null;
     let scanned = $state(false);
     let marking = $state(false);
+    let commenting = $state(false);
+    let comment = $state("");
 
     $effect(() => {
         if (videoElem) {
@@ -34,6 +39,9 @@
                             QRres = data.ids.find((entry) => {
                                 return entry && entry[0] === QRdata;
                             });
+                        }
+                        if (QRres[3] != null) {
+                            comment = QRres[3];
                         }
                         scanned = true;
                     }
@@ -59,7 +67,7 @@
                 .start()
                 .then(async () => {
                     cameras = await QrScanner.listCameras();
-                    // commented out as usually [0] is front facing cam
+                    // commentinged out as usually [0] is front facing cam
                     // camToUse = cameras[0].id;
                 })
                 .catch((e) => console.error(e));
@@ -116,7 +124,61 @@
     </div>
 
     {#if scanned}
-        {#if QRres && QRres.length > 0}
+        {#if commenting}
+            <div class="absolute bottom-5 w-full px-5">
+                <div class="bg-blue-100 p-3 rounded-md flex flex-col gap-1">
+                    <button
+                        onclick={() => (commenting = false)}
+                        class="flex items-center gap-2 text-blue-950"
+                    >
+                        <ArrowLeft size="20" />
+                        Back
+                    </button>
+                    <h2 class="text-xl font-semibold text-blue-900">Comment</h2>
+                    <form
+                        method="POST"
+                        action="?/comment"
+                        use:enhance={() => {
+                            marking = true;
+                            return async ({ update }) => {
+                                await update({ reset: false });
+                                marking = false;
+                                if (!form?.errorMsg) {
+                                    scanned = false;
+                                }
+                            };
+                        }}
+                    >
+                        <Textarea
+                            name="comment"
+                            class="bg-blue-50 outline"
+                            bind:value={comment}
+                        />
+                        <input
+                            name="id"
+                            type="text"
+                            class="hidden"
+                            bind:value={QRdata}
+                        />
+                        {#if marking}
+                            <button
+                                class="bg-blue-950 text-blue-50 p-2 flex justify-center items-center gap-3 mt-2 rounded-md font-medium"
+                            >
+                                Submitting...
+                                <Spinner />
+                            </button>
+                        {:else}
+                            <button
+                                class="bg-blue-950 text-blue-50 p-2 flex justify-center items-center gap-3 mt-2 rounded-md font-medium"
+                            >
+                                Submit
+                                <ArrowRight size="20" />
+                            </button>
+                        {/if}
+                    </form>
+                </div>
+            </div>
+        {:else if QRres && QRres.length > 0}
             <div class="absolute bottom-5 w-full px-5">
                 <div
                     class=" bg-blue-100 p-3 rounded-md {form?.errorMsg
@@ -167,33 +229,42 @@
                             class="hidden"
                             bind:value={day}
                         />
-                        {#if marking}
-                            <button
-                                class="bg-blue-950 text-blue-50 p-2 flex justify-center items-center gap-3 mt-2 rounded-md font-medium"
-                            >
-                                Marking...
-                                <Spinner />
-                            </button>
-                        {:else if form?.errorMsg}
-                            <button
-                                onclick={() => (
-                                    (QRdata = ""),
-                                    (scanned = false),
-                                    (form.errorMsg = "")
-                                )}
-                                class="bg-red-950 text-red-50 p-2 flex justify-center items-center gap-3 mt-2 rounded-md font-medium"
-                            >
-                                I have screenshotted
-                                <ArrowRight size="20" />
-                            </button>
-                        {:else}
-                            <button
-                                class="bg-blue-950 text-blue-50 p-2 flex justify-center items-center gap-3 mt-2 rounded-md font-medium"
-                            >
-                                Mark Present for Day {day}
-                                <ArrowRight size="20" />
-                            </button>
-                        {/if}
+                        <div class="flex gap-3">
+                            {#if marking}
+                                <button
+                                    class="bg-blue-950 text-blue-50 p-2 flex justify-center items-center gap-3 mt-2 rounded-md font-medium"
+                                >
+                                    Marking...
+                                    <Spinner />
+                                </button>
+                            {:else if form?.errorMsg}
+                                <button
+                                    onclick={() => (
+                                        (QRdata = ""),
+                                        (scanned = false),
+                                        (form.errorMsg = "")
+                                    )}
+                                    class="bg-red-950 text-red-50 p-2 flex justify-center items-center gap-3 mt-2 rounded-md font-medium"
+                                >
+                                    I have screenshotted
+                                    <ArrowRight size="20" />
+                                </button>
+                            {:else}
+                                <button
+                                    onclick={() => (commenting = true)}
+                                    class="bg-blue-50 text-blue-950 p-2 flex justify-center items-center gap-3 mt-2 rounded-md font-medium outline"
+                                >
+                                    Add Comment
+                                    <Plus size="20" />
+                                </button>
+                                <button
+                                    class="bg-blue-950 text-blue-50 p-2 flex justify-center items-center gap-3 mt-2 rounded-md font-medium"
+                                >
+                                    Mark Present
+                                    <ArrowRight size="20" />
+                                </button>
+                            {/if}
+                        </div>
                     </form>
                 </div>
             </div>

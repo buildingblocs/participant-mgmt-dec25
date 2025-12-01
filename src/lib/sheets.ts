@@ -24,13 +24,24 @@ export async function batchGet(ranges: string[]) {
   });
 }
 
-export async function update(range: string) {
-  return await sheets.spreadsheets.values.update({
-    spreadsheetId: sheetId,
-    range,
-    valueInputOption: "USER_ENTERED",
-    requestBody: {
-      values: [["TRUE"]],
-    },
-  });
+export async function update(range: string, value: string) {
+  if (value == null) {
+    return await sheets.spreadsheets.values.update({
+      spreadsheetId: sheetId,
+      range,
+      valueInputOption: "USER_ENTERED",
+      requestBody: {
+        values: [["TRUE"]],
+      },
+    });
+  } else {
+    return await sheets.spreadsheets.values.update({
+      spreadsheetId: sheetId,
+      range,
+      valueInputOption: "USER_ENTERED",
+      requestBody: {
+        values: [[value]],
+      },
+    });
+  }
 }
