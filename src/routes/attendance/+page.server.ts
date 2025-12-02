@@ -82,7 +82,6 @@ export const load: PageServerLoad = async () => {
     header: {
       heading: "Attendance",
       back: true,
-      manualMark: true,
     },
   };
 };
