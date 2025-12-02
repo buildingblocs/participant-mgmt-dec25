@@ -30,14 +30,15 @@
                         QRdata = result.data;
                         entry = data.ids[0].values
                             .slice(1)
-                            .find((entry) => entry[0] === QRdata);
+                            .find((entry) => entry[2] === QRdata);
+                        console.log(entry);
                         if (entry) {
                             QRres = data.ids[0].values.find((entry) => {
-                                return entry && entry[0] === QRdata;
+                                return entry && entry[2] === QRdata;
                             });
                         }
                         const index = data.ids[0].values.findIndex(
-                            (entry) => entry[0] === QRdata,
+                            (entry) => entry[2] === QRdata,
                         );
                         if (data.ids[1].values[index][0] == "TRUE") {
                             collected = true;
@@ -174,7 +175,7 @@
                         }}
                     >
                         <p>
-                            Name: {QRres[1]}
+                            Name: {QRres[0]}
                             <br />
                             {#if form?.errorMsg}
                                 Error: {form?.errorMsg}

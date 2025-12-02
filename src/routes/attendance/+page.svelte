@@ -34,14 +34,14 @@
                         QRdata = result.data;
                         entry = data.ids
                             .slice(1)
-                            .find((entry) => entry[0] === QRdata);
+                            .find((entry) => entry[2] === QRdata);
                         if (entry) {
                             QRres = data.ids.find((entry) => {
-                                return entry && entry[0] === QRdata;
+                                return entry && entry[2] === QRdata;
                             });
                         }
-                        if (QRres[3] != null) {
-                            comment = QRres[3];
+                        if (QRres[4] != null) {
+                            comment = QRres[4];
                         }
                         scanned = true;
                     }
@@ -143,6 +143,7 @@
                             return async ({ update }) => {
                                 await update({ reset: false });
                                 marking = false;
+                                commenting = false;
                                 if (!form?.errorMsg) {
                                     scanned = false;
                                 }
@@ -209,9 +210,9 @@
                         }}
                     >
                         <p>
-                            Name: {QRres[1]}
+                            Name: {QRres[0]}
                             <br />
-                            Group: {QRres[2]}
+                            Room: {QRres[3]}
                             <br />
                             {#if form?.errorMsg}
                                 Error: {form?.errorMsg}
