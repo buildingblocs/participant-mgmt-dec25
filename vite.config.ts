@@ -1,7 +1,13 @@
+import { sentrySvelteKit } from "@sentry/sveltekit";
 import tailwindcss from '@tailwindcss/vite';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-	plugins: [tailwindcss(), sveltekit()]
+	plugins: [sentrySvelteKit({
+        sourceMapsUploadOptions: {
+            org: "6246fc3f8553",
+            project: "javascript-sveltekit"
+        }
+    }), tailwindcss(), sveltekit()]
 });
