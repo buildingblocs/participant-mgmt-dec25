@@ -9,7 +9,7 @@ export const GET: RequestHandler = async ({ url }) => {
         error(400, "No data");
     }
 
-    const qrBuffer = await QRCode.toBuffer(data, { scale: 10 });
+    const qrBuffer = await QRCode.toBuffer(data, { scale: 5 });
 
     return new Response(qrBuffer, {
         headers: {

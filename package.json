@@ -33,6 +33,7 @@
 		"@auth/sveltekit": "^1.11.1",
 		"@fontsource-variable/inter": "^5.2.8",
 		"@sentry/sveltekit": "^10.27.0",
+		"@sveltejs/adapter-netlify": "^5.2.4",
 		"googleapis": "^105.0.0",
 		"inter-ui": "^4.1.1",
 		"octokit": "^5.0.5",
