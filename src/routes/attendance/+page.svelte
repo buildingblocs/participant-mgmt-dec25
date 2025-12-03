@@ -156,7 +156,7 @@
                             bind:value={comment}
                         />
                         <input
-                            name="qrdata"
+                            name="id"
                             type="hidden"
                             value={QRdata}
                         />
