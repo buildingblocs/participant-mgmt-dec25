@@ -31,7 +31,7 @@
                         entry = data.ids[0].values
                             .slice(1)
                             .find((entry) => entry[2] === QRdata);
-                        console.log(entry);
+
                         if (entry) {
                             QRres = data.ids[0].values.find((entry) => {
                                 return entry && entry[2] === QRdata;
@@ -40,7 +40,11 @@
                         const index = data.ids[0].values.findIndex(
                             (entry) => entry[2] === QRdata,
                         );
-                        if (data.ids[1].values[index][0] == "TRUE") {
+                        if (
+                            index !== -1 &&
+                            data.ids[1].values[index] &&
+                            data.ids[1].values[index][0] === "TRUE"
+                        ) {
                             collected = true;
                         }
                         scanned = true;

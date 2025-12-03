@@ -40,7 +40,7 @@
                                 return entry && entry[2] === QRdata;
                             });
                         }
-                        if (QRres[4] != null) {
+                        if (QRres && QRres.length > 4 && QRres[4] != null) {
                             comment = QRres[4];
                         }
                         scanned = true;
@@ -67,7 +67,7 @@
                 .start()
                 .then(async () => {
                     cameras = await QrScanner.listCameras();
-                    // commentinged out as usually [0] is front facing cam
+                    // commented out as usually [0] is front facing cam
                     // camToUse = cameras[0].id;
                 })
                 .catch((e) => console.error(e));
@@ -156,10 +156,9 @@
                             bind:value={comment}
                         />
                         <input
-                            name="id"
-                            type="text"
-                            class="hidden"
-                            bind:value={QRdata}
+                            name="qrdata"
+                            type="hidden"
+                            value={QRdata}
                         />
                         {#if marking}
                             <button

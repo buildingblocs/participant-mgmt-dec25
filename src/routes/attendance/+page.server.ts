@@ -62,15 +62,18 @@ export const actions = {
         // get index
         const index = result.data.values?.findIndex((entry) => entry[2] === id);
 
-        await update(col + (index! + 1), comment);
+        if (index === undefined || index === -1) {
+          return fail(400, { errorMsg: "ID not in sheet" });
+        }
+        await update(col + (index + 1), comment);
         // return fail(400, { errorMsg: "ID not in sheet" });
         return { success: true };
       } catch (e) {
         console.error(e);
-        return fail(502, { errorMsg: string(e) });
+        return fail(502, { errorMsg: String(e) });
       }
     } else {
-      return fail(400, { errorMsg: "Bro what" });
+      return fail(400, { errorMsg: "Missing comment or ID parameter" });
     }
   },
 } satisfies Actions;
