@@ -1,11 +1,21 @@
 import { fail } from "@sveltejs/kit";
 import type { Actions, PageServerLoad } from "./$types";
 import { batchGet, update } from "$lib/sheets";
+import { env } from "$env/dynamic/private";
 
-const result = await batchGet(["Sheet1!A:B", "Sheet1!G:H"]);
+async function fetchSheetData() {
+  const result = await batchGet();
+  if (!result.data) {
+    throw new Error("Unexpected data received");
+  }
+  console.log(result.data.valueRanges);
+  return result;
+}
 
 export const actions = {
   markPresent: async (event) => {
+    const result = await fetchSheetData();
+
     if (result.data.valueRanges && result.data.valueRanges.length > 1) {
       const secondRange = result.data.valueRanges[1];
       const firstRange = result.data.valueRanges[0];
@@ -16,34 +26,28 @@ export const actions = {
         firstRange.values.length > 0
       ) {
         const freebies = secondRange.values[0];
-        type freebieEnums = keyof typeof freebies;
         const formData = await event.request.formData();
         const freebieCollected = formData.get("item") as string;
         if (freebies.includes(freebieCollected)) {
           // get row num
           const index = firstRange.values.findIndex(
-            (entry) => entry[0] === formData.get("id"),
+            (entry) => entry[2] === formData.get("id"),
           );
 
           if (index === undefined || index === -1) {
             return fail(400, { errorMsg: "ID not in sheet" });
           }
 
-          const freebieColumns = {
-            "Freebie 1": "G",
-            "Freebie 2": "H",
-          };
-
+          const freebieColumns = JSON.parse(env.SHEET_ENTRY_FREEBIES);
           // update collection status
           try {
             await update(
-              freebieColumns[freebieCollected as keyof typeof freebieColumns] +
-                (index! + 1),
+              `${freebieColumns[freebieCollected as keyof typeof freebieColumns]}${index + 1}`,
             );
             // return fail(400, { errorMsg: "ID not in sheet" });
             return { success: true };
           } catch (e) {
-            return fail(502, { errorMsg: e });
+            return fail(502, { errorMsg: String(e) });
           }
         } else {
           return fail(400, {
@@ -64,6 +68,7 @@ export const actions = {
 } satisfies Actions;
 
 export const load: PageServerLoad = async () => {
+  const result = await fetchSheetData();
   return {
     ids: result.data.valueRanges,
     header: {

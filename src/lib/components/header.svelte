@@ -11,7 +11,9 @@
     class="bg-blue-950 text-white flex flex-col h-40 min-h-40 justify-between p-5 max-w-md w-full mx-auto"
 >
     {#if data.header.back}
-        <Back />
+        <div class="flex items-center justify-between">
+            <Back />
+        </div>
     {:else if data.header.info == null}
         <div class="flex items-center justify-between w-full">
             <p class="text-sm tracking-tight text-blue-100">

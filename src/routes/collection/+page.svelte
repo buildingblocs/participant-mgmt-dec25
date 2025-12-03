@@ -17,6 +17,7 @@
     let scanner: QrScanner | null = null;
     let scanned = $state(false);
     let marking = $state(false);
+    let collected = $state(false);
 
     $effect(() => {
         if (videoElem) {
@@ -29,11 +30,22 @@
                         QRdata = result.data;
                         entry = data.ids[0].values
                             .slice(1)
-                            .find((entry) => entry[0] === QRdata);
+                            .find((entry) => entry[2] === QRdata);
+
                         if (entry) {
                             QRres = data.ids[0].values.find((entry) => {
-                                return entry && entry[0] === QRdata;
+                                return entry && entry[2] === QRdata;
                             });
+                        }
+                        const index = data.ids[0].values.findIndex(
+                            (entry) => entry[2] === QRdata,
+                        );
+                        if (
+                            index !== -1 &&
+                            data.ids[1].values[index] &&
+                            data.ids[1].values[index][0] === "TRUE"
+                        ) {
+                            collected = true;
                         }
                         scanned = true;
                     }
@@ -116,7 +128,27 @@
     </div>
 
     {#if scanned}
-        {#if QRres && QRres.length > 0}
+        {#if collected}
+            <div class="absolute bottom-5 w-full px-5">
+                <div class="bg-red-100 p-3 rounded-md">
+                    <h2 class="text-xl font-semibold text-red-900">
+                        Participant has collected item
+                    </h2>
+                    <p>Please do not pass the item</p>
+                    <button
+                        onclick={() => (
+                            (QRdata = ""),
+                            (scanned = false),
+                            (collected = false)
+                        )}
+                        class="bg-red-950 text-red-50 p-2 flex justify-center items-center gap-3 mt-2 rounded-md font-medium"
+                    >
+                        Start Scanning
+                        <ArrowRight size="20" />
+                    </button>
+                </div>
+            </div>
+        {:else if QRres && QRres.length > 0}
             <div class="absolute bottom-5 w-full px-5">
                 <div
                     class=" bg-blue-100 p-3 rounded-md {form?.errorMsg
@@ -147,7 +179,7 @@
                         }}
                     >
                         <p>
-                            Name: {QRres[1]}
+                            Name: {QRres[0]}
                             <br />
                             {#if form?.errorMsg}
                                 Error: {form?.errorMsg}
