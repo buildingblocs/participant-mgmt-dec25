@@ -40,8 +40,6 @@
                                 return entry && entry[2] === QRdata;
                             });
                         }
-                        console.log(QRdata)
-                        console.log(entry)
                         if (QRres && QRres.length > 4 && QRres[4] != null) {
                             comment = QRres[4];
                         }
