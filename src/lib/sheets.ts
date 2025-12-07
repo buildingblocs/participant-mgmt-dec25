@@ -62,7 +62,7 @@ export async function update(range: string, value?: string) {
   if (value == null) {
     return await sheets.spreadsheets.values.update({
       spreadsheetId: SHEET_ID,
-      range,
+      range: `${SHEET_NAME}${range}`,
       valueInputOption: "USER_ENTERED",
       requestBody: {
         values: [["TRUE"]],
@@ -71,7 +71,7 @@ export async function update(range: string, value?: string) {
   } else {
     return await sheets.spreadsheets.values.update({
       spreadsheetId: SHEET_ID,
-      range,
+      range: `${SHEET_NAME}${range}`,
       valueInputOption: "USER_ENTERED",
       requestBody: {
         values: [[value]],
