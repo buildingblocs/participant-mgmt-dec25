@@ -11,7 +11,7 @@
 
     let { data, form }: PageProps = $props();
     let videoElem: HTMLVideoElement;
-    let day = $state("1");
+    let day = $state("2");
     let QRdata = $state("");
     let QRres = $state([]);
     let cameras = $state<QrScanner.Camera[]>([]);
