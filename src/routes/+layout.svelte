@@ -3,7 +3,7 @@
     import "inter-ui/inter.css";
     import Header from "$lib/components/header.svelte";
     import favicon from "$lib/assets/favicon.svg";
-    import { Skeleton } from "$lib/components/ui/skeleton/index.ts";
+    import { Skeleton } from "$lib/components/ui/skeleton/index.js";
     import { page } from "$app/state";  import { beforeNavigate, afterNavigate } from '$app/navigation'
 
     let loading = $state(false)
