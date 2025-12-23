@@ -16,6 +16,12 @@
             </Button>
         </a>
 
+        <a href="/attendance/virtual">
+            <Button text="GMeet Attendance">
+                <Upload />
+            </Button>
+        </a>
+
         <a href="/collection">
             <Button text="Freebie Collection">
                 <Upload />

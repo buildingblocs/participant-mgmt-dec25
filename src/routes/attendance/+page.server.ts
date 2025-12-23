@@ -5,7 +5,7 @@ import { get, update } from "$lib/sheets";
 import { env } from "$env/dynamic/private";
 
 async function fetchSheetData() {
-  const result = await get();
+  const result = await get("physical");
   if (!result.data) {
     throw new Error("Unexpected data received");
   }

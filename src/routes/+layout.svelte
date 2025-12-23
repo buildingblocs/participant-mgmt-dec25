@@ -3,7 +3,17 @@
     import "inter-ui/inter.css";
     import Header from "$lib/components/header.svelte";
     import favicon from "$lib/assets/favicon.svg";
-    import { page } from "$app/state";
+    import { Skeleton } from "$lib/components/ui/skeleton/index.js";
+    import { page } from "$app/state";  import { beforeNavigate, afterNavigate } from '$app/navigation'
+
+    let loading = $state(false)
+
+    beforeNavigate((nav) => {
+        loading = true
+    })
+    afterNavigate(() => {
+        loading = false
+    })
 
     let { children } = $props();
 </script>
@@ -17,6 +27,11 @@
         <Header data={page.data} />
     </div>
     <div class="max-w-md w-full flex-1 mx-auto relative">
-        {@render children()}
+        {#if loading}
+            <Skeleton class="w-full h-[7%] m-3" />
+            <Skeleton class="w-full h-[85%] m-3" />
+        {:else}
+            {@render children()}
+        {/if}
     </div>
 </div>
