@@ -3,7 +3,7 @@
     import "inter-ui/inter.css";
     import Header from "$lib/components/header.svelte";
     import favicon from "$lib/assets/favicon.svg";
-    import { Skeleton } from "$lib/components/ui/skeleton/index.js";
+    import { Skeleton } from "$lib/components/ui/skeleton/index.ts";
     import { page } from "$app/state";  import { beforeNavigate, afterNavigate } from '$app/navigation'
 
     let loading = $state(false)
@@ -19,7 +19,7 @@
 </script>
 
 <svelte:head>
-    <link rel="icon" href={favicon} />
+    <link href={favicon} rel="icon" />
 </svelte:head>
 
 <div class="flex flex-col full-viewport-height">
