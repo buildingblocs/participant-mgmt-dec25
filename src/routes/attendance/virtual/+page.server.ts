@@ -198,7 +198,7 @@ export const actions = {
 		}
 		const rowNumber = rowIndex + 1;
 
-		await update(`${SHEET_NAME_VIRTUAL}!${col}${rowNumber}`);
+		await update(`${SHEET_NAME_VIRTUAL}${col}${rowNumber}`);
 	}
 } satisfies Actions;
 
