@@ -1,9 +1,11 @@
 import type { Actions, PageServerLoad } from './$types';
 import { fail } from '@sveltejs/kit';
 import { get, update, batchUpdate } from '$lib/sheets';
+import {env} from "$env/dynamic/private";
 
 const MAX_SIZE = 5 * 1024 * 1024;
 const ALLOWED_TYPES = ['text/csv'];
+const SHEET_NAME_VIRTUAL = env.SHEET_NAME_VIRTUAL;
 
 const workshops = {
 	"Git and Github": {
@@ -196,7 +198,7 @@ export const actions = {
 		}
 		const rowNumber = rowIndex + 1;
 
-		await update(`Sheet2!${col}${rowNumber}`);
+		await update(`${SHEET_NAME_VIRTUAL}!${col}${rowNumber}`);
 	}
 } satisfies Actions;
 

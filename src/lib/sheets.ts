@@ -101,7 +101,7 @@ export async function update(range: string, value?: string) {
 
 export async function batchUpdate(ranges: string[]) {
 	const data = ranges.map(r => ({
-		range: `Sheet2!${r}`,
+		range: `${SHEET_NAME_VIRTUAL}!${r}`,
 		values: [["TRUE"]]
 	}));
 
